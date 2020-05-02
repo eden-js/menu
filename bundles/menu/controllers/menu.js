@@ -39,12 +39,9 @@ class MenuController extends Controller {
    */
   build() {
     // On render
-    this.eden.pre('view.compile', (render) => {
+    this.eden.pre('view.compile', ({ res, render }) => {
       // get menus
-      const { menus } = render.state;
-
-      // Delete from state
-      delete render.state.menus;
+      const { menus } = res;
 
       // Return
       if (render.isJSON || !menus) return;
@@ -73,37 +70,40 @@ class MenuController extends Controller {
     // Set app
     this.eden.router.use(async (req, res, next) => {
       // Set req remove
-      req.menu = {};
+      const menu = {};
 
       // Set menus
-      res.locals.menus = await this._menus(req.user, menuConfig);
+      res.menus = await this._menus(req.user, menuConfig);
 
       // Add function
-      req.menu.create = (type, route, item) => {
+      menu.create = (type, route, item) => {
         // Add menu item
         menuHelper.create(type, route, item, res);
 
         // Return
-        return req.menu;
+        return menu;
       };
 
       // Edit function
-      req.menu.update = (type, route, item) => {
+      menu.update = (type, route, item) => {
         // Edit menu item
         menuHelper.update(type, route, item, res);
 
         // Return
-        return req.menu;
+        return menu;
       };
 
       // Remove function
-      req.menu.remove = (type, route) => {
+      menu.remove = (type, route) => {
         // Remove menu item
         menuHelper.remove(type, route, res);
 
         // Return
-        return req.menu;
+        return menu;
       };
+
+      // set menu
+      req.menu = res.menu = menu;
 
       // Run next
       next();
