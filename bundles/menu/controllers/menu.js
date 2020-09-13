@@ -134,7 +134,7 @@ class MenuController extends Controller {
    */
   async _menus(User, menus) {
     // Clone menus
-    const Menus = JSON.parse(JSON.stringify(menus));
+    const Menus = { ...menus };
 
     // Add hook
     await this.eden.hook('menus.init', Menus);
