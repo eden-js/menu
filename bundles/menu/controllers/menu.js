@@ -3,8 +3,7 @@
 const Controller = require('controller');
 
 // Require helpers
-const menuHelper  = helper('menu');
-const blockHelper = helper('cms/block');
+const menuHelper = helper('menu');
 
 // Require cache
 const menuConfig = cache('menus');
@@ -108,19 +107,6 @@ class MenuController extends Controller {
       // Run next
       next();
     });
-
-    // register simple block
-    blockHelper.block('menu.element', {
-      acl         : false,
-      for         : ['frontend'],
-      title       : 'Menu Block',
-      description : 'Menu block',
-    }, async () => {
-      // return
-      return {
-        tag : 'menu',
-      };
-    }, async () => { });
   }
 
 
